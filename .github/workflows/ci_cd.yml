@@ -28,4 +28,4 @@ jobs:
 
       - name: Analysing the code with pre-commit
         run: |
-          make pre-commit
+          pre-commit run --all-files
