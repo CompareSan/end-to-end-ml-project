@@ -25,7 +25,6 @@ jobs:
           virtualenvs-create: true
       - name: Install project and dependencies
         run: poetry install --only dev --sync
-
       - name: Analysing the code with pre-commit
         run: |
-          pre-commit run --all-files
+          poetry run pre-commit run --all-files
