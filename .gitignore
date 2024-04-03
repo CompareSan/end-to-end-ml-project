@@ -1,0 +1,7 @@
+*pdf
+*ipynb
+*env
+*mypy*
+.devcontainer
+*prova*
+*cache*

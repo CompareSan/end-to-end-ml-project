@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "end-to-end-ml-project"
+version = "0.1.0"
+description = ""
+authors = ["Filippo Buoncompagni <filippo.buonco95@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.2.2"
+ray = "^2.10.0"
+scikit-learn = "^1.4.1.post1"
+nltk = "^3.8.1"
+transformers = "^4.39.3"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.7.0"
+ruff = "^0.3.5"
+mlflow = "^2.11.3"
+mypy = "^1.9.0"
+ipykernel = "^6.29.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
