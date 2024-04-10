@@ -1,12 +1,17 @@
 import nltk
 import pandas as pd
+import torch
+from evaluate import evaluate_net
+from neural_net import FCNet
 from nltk.corpus import qc
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from tfidf_dataset import TfidfDataset
+from torch import nn, optim
+from torch.utils.data import DataLoader
+from training import train_net
 
-from end_to_end_ml_project.evaluate import get_accuracy
 from end_to_end_ml_project.feature_engineering import tfidf_transform
 from end_to_end_ml_project.preprocessing import (
     convert_to_lower_case,
@@ -49,18 +54,60 @@ def main() -> None:
     X_train_tfidf, X_valid_tfidf, X_test_tfidf = tfidf_transform(
         tftfidf_vect, X_train, X_valid, X_test
     )
+    train_dataset = TfidfDataset(X_train_tfidf, y_train)
+    valid_dataset = TfidfDataset(X_valid_tfidf, y_valid)
+    test_dataset = TfidfDataset(X_test_tfidf, y_test)
+    BATCH_SIZE = 64
 
-    model = LogisticRegression(random_state=0)
-    model.fit(X_train_tfidf, y_train)
+    tfdif_train_dataloader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+    )
+    tfdif_test_dataloader = DataLoader(
+        test_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+    )
+    tfdif_valid_dataloader = DataLoader(
+        valid_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+    )
 
-    # Evaluate the model
-    train_acc = get_accuracy(model, X_train_tfidf, y_train)
-    valid_acc = get_accuracy(model, X_valid_tfidf, y_valid)
-    test_acc = get_accuracy(model, X_test_tfidf, y_test)
+    LR = 3e-4
+    model = FCNet()
+    optimizer = optim.Adam(model.parameters(), lr=LR)
+    criterion = nn.CrossEntropyLoss()
 
-    print(f"Accuracy on train: {train_acc}")
-    print(f"Accuracy on validation: {valid_acc}")
-    print(f"Accuracy on test: {test_acc}")
+    device = (
+        "cuda"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
+    print(f"Using {device} device")
+    model = model.to(device)
+    trained_model, _, _ = train_net(
+        model,
+        optimizer,
+        criterion,
+        tfdif_train_dataloader,
+        tfdif_valid_dataloader,
+        device,
+        n_epochs=3,
+    )
+
+    accuracy, precision, recall, f1 = evaluate_net(
+        trained_model,
+        tfdif_test_dataloader,
+        device,
+    )
+    print(f"Accuracy: {accuracy}")
+    print(f"Precision:, {precision}")
+    print(f"Recall:, {recall}")
+    print(f"F1 Score:, {f1}")
 
 
 if __name__ == "__main__":
