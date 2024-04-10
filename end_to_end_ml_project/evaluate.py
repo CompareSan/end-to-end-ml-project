@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import torch
 from sklearn.metrics import f1_score, precision_score, recall_score
 
@@ -6,7 +8,7 @@ def evaluate_net(
     model,
     dataloader,
     device,
-):
+) -> Tuple[float, float, float, float]:
     correct = 0
     total = 0
     predictions = []

@@ -5,3 +5,8 @@
 .devcontainer
 *prova*
 *cache*
+*mlruns*
+*mlartifacts*
+*mlflow*
+*.metaflow*
+*artifacts*

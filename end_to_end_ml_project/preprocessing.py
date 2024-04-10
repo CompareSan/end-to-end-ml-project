@@ -41,3 +41,11 @@ def get_df_without_stop_words(
     stop_words = fn("english")
     df["text"] = df["text"].apply(lambda x: _remove_stop_words(x, stop_words))
     return df
+
+
+def preprocessing(df: pd.DataFrame) -> pd.DataFrame:
+    df = split_labels(df)
+    df = convert_to_lower_case(df)
+    df = remove_punctuation(df)
+    df = get_df_without_stop_words(df)
+    return df
