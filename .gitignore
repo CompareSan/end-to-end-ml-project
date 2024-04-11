@@ -10,3 +10,4 @@
 *mlflow*
 *.metaflow*
 *artifacts*
+*pickle*

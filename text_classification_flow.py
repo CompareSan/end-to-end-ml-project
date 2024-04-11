@@ -63,17 +63,18 @@ class TextClassificationFlow(FlowSpec):
     @step
     def feature_engineering(self):
         from sklearn.feature_extraction.text import TfidfVectorizer
-
+        import pickle
         from end_to_end_ml_project.feature_engineering import tfidf_transform
         from end_to_end_ml_project.tfidf_dataset import TfidfDataset
 
         tftfidf_vect = TfidfVectorizer(ngram_range=(1, 2), max_features=8000)
-        X_train_tfidf, X_valid_tfidf, X_test_tfidf = tfidf_transform(
-            tftfidf_vect, self.X_train, self.X_valid, self.X_test
+        X_train_tfidf, X_valid_tfidf, X_test_tfidf, self.fitted_tftfidf_vect = (
+            tfidf_transform(tftfidf_vect, self.X_train, self.X_valid, self.X_test)
         )
         self.train_dataset = TfidfDataset(X_train_tfidf, self.y_train)
         self.valid_dataset = TfidfDataset(X_valid_tfidf, self.y_valid)
         self.test_dataset = TfidfDataset(X_test_tfidf, self.y_test)
+        pickle.dump(self.fitted_tftfidf_vect, open("tfidf.pickle", "wb"))
         self.next(self.train_model)
 
     @step
@@ -150,7 +151,7 @@ class TextClassificationFlow(FlowSpec):
             mlflow.log_metrics(metrics)
             mlflow.pytorch.log_model(
                 trained_model,
-                artifact_path="pytorch_text_classification_model",
+                "pytorch_model",
             )
 
         self.accuracy = accuracy
