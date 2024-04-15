@@ -59,6 +59,8 @@ jobs:
 
       - name: Set output
         run: echo "cluster_name=$(cat infra-terraform/cluster_name.txt)" >> $GITHUB_ENV
+      - name: print output
+        run: echo $GITHUB_ENV
 
   push_to_registry:
     name: Push Docker image to Docker Hub
