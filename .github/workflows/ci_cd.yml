@@ -45,13 +45,9 @@ jobs:
       - name: Append DigitalOcean credentials to variables.tf
         run: echo 'variable "do_token" { default = "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" }' >> infra-terraform/variables.tf
 
-      - name: Change directory to infra-terraform
-        run: cd infra-terraform
-
       - name: Terraform init
-        run: terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DO }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_D0 }}"
-
-
+        run: cd infra-terraform &&
+              terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DO }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_D0 }}"
       - name: Terraform apply
         run: terraform apply -auto-approve
       - name: Terraform show
