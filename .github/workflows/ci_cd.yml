@@ -50,10 +50,15 @@ jobs:
               terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DO }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_D0 }}"
       - name: Terraform apply
         run: cd infra-terraform && terraform apply -auto-approve
-      - name: Terraform show
-        run:  cd infra-terraform && echo "::set-output name=cluster_name::$(terraform show | grep name | awk -F' = ' '{print $2}' | head -n1)"
-      - name: Extract cluster id
-        run: echo "Cluster id is ${{ steps.terraform_apply.outputs.cluster_name }}"
+
+      - name: Extract cluster name
+        id: extract_cluster_name
+        working-directory: infra-terraform
+        run: |
+          terraform show | grep name | awk -F' = ' '{print $2}' | head -n1 > cluster_name.txt
+
+      - name: Set output
+        run: echo "cluster_name=$(cat infra-terraform/cluster_name.txt)" >> $GITHUB_ENV
 
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -103,7 +108,9 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save ${{ needs.terraform_apply.outputs.cluster_name }}
+        run: |
+          cluster_name="${{ env.cluster_name }}"
+          doctl kubernetes cluster kubeconfig save $cluster_name
 
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f app-deployment.yaml && kubectl apply -f app-service.yaml
