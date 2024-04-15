@@ -49,9 +49,9 @@ jobs:
         run: cd infra-terraform &&
               terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DO }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_D0 }}"
       - name: Terraform apply
-        run: terraform apply -auto-approve
+        run: cd infra-terraform && terraform apply -auto-approve
       - name: Terraform show
-        run: echo "::set-output name=cluster_name::$(terraform show | grep name | awk -F' = ' '{print $2}' | head -n1)"
+        run:  cd infra-terraform && echo "::set-output name=cluster_name::$(terraform show | grep name | awk -F' = ' '{print $2}' | head -n1)"
       - name: Extract cluster id
         run: echo "Cluster id is ${{ steps.terraform_apply.outputs.cluster_name }}"
 
