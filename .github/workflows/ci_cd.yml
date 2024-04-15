@@ -109,7 +109,7 @@ jobs:
 
       - name: Save DigitalOcean kubeconfig
         run: |
-          doctl kubernetes cluster kubeconfig save ${{ env.CLUSTER_NAME }}
+          doctl kubernetes cluster kubeconfig save "terraformk8s"
 
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f app-deployment.yaml && kubectl apply -f app-service.yaml
