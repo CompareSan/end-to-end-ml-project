@@ -13,3 +13,4 @@
 *pickle*
 *variables.tf*
 *.terraform*
+*terraform.tfstate*
