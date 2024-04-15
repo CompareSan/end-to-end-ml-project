@@ -50,14 +50,11 @@ jobs:
         run: cd infra-terraform &&
               terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID_DO }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY_D0 }}"
       - name: Terraform apply
-        run: cd infra-terraform && terraform apply -auto-approve
-
-      - name: Extract cluster name
         id: extract_cluster_name
-        working-directory: infra-terraform
         run: |
+          cd infra-terraform && terraform apply -auto-approve
           echo "CLUSTER_NAME=$(terraform show | grep name | awk -F' = ' '{print $2}' | head -n1)" >> $GITHUB_ENV
-          echo $GITHUB_ENV
+
 
 
 
