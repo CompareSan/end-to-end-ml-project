@@ -11,6 +11,3 @@
 *.metaflow*
 *artifacts*
 *pickle*
-*variables.tf*
-*.terraform*
-*terraform.tfstate*
