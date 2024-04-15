@@ -57,7 +57,7 @@ jobs:
         working-directory: infra-terraform
         run: |
           echo "CLUSTER_NAME=$(terraform show | grep name | awk -F' = ' '{print $2}' | head -n1)" >> $GITHUB_ENV
-          run: echo $GITHUB_ENV
+          echo $GITHUB_ENV
 
 
 
