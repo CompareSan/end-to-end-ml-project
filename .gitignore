@@ -11,3 +11,4 @@
 *.metaflow*
 *artifacts*
 *pickle*
+*.terraform*
