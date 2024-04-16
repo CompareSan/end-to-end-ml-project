@@ -62,8 +62,10 @@ class TextClassificationFlow(FlowSpec):
 
     @step
     def feature_engineering(self):
-        from sklearn.feature_extraction.text import TfidfVectorizer
         import pickle
+
+        from sklearn.feature_extraction.text import TfidfVectorizer
+
         from end_to_end_ml_project.feature_engineering import tfidf_transform
         from end_to_end_ml_project.tfidf_dataset import TfidfDataset
 
